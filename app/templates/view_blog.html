@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block title %}View Blog{% endblock %}
+
+{% block content %}
+<div class="blog-detail">
+    <h2>{{ blog.title }}</h2>
+    <p><strong>Posted on:</strong> {{ blog.date_posted.strftime('%B %d, %Y') }}</p>
+    <p>{{ blog.content }}</p>
+</div>
+
+<hr>
+
+<div class="comments-section">
+    <h3>Comments</h3>
+
+    {% if blog.comments %}
+        <ul class="comment-list">
+            {% for comment in blog.comments %}
+                <li>
+                    <p><strong>{{ comment.user.username }}</strong> said:</p>
+                    <p>{{ comment.content }}</p>
+                    <p class="comment-date">{{ comment.date_posted.strftime('%d %b %Y %I:%M %p') }}</p>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No comments yet. Be the first to comment!</p>
+    {% endif %}
+</div>
+
+<hr>
+
+{% if session.get('user') %}
+<div class="comment-form">
+    <h4>Add a Comment</h4>
+    <form action="{{ url_for('blog.add_comment', blog_id=blog.id) }}" method="post">
+        <textarea name="content" placeholder="Write your comment here..." required></textarea>
+        <button type="submit" class="btn">Add Comment</button>
+    </form>
+</div>
+{% else %}
+    <p><a href="{{ url_for('auth.login') }}">Login</a> to add a comment.</p>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block title %} Home page {% endblock %}
+{% block content %}
+<div class="blog-container">
+    <h2>All Blogs</h2>
+
+    {% for blog in blogs %}
+        <div class="blog_post">
+            <h3>{{ blog.title }}</h3>
+            <p>{{ blog.content }}</p>
+            <p><small>by {{ blog.author.username }} on {{ blog.date_posted.strftime('%Y-%m-%d  %H:%M') }}</small></p>
+
+            {% if session.get('user') == blog.user_id %}
+                <form action="{{ url_for('blog.delete_blog', blog_id=blog.id) }}" method="post" style="display: inline;">
+                    <button type="submit" class="btn-small">Delete</button>
+                </form>
+                <a href="{{ url_for('blog.edit_blog', blog_id=blog.id) }}" class="btn-small">Edit</a>
+            {% endif %}
+
+            <a href="{{ url_for('blog.view_blog', blog_id=blog.id) }}">View comments</a>
+        </div>
+    {% else %}
+        <p>No blog posts yet.</p>
+    {% endfor %}
+</div>
+{% endblock %}
